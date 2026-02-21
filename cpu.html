@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Architecture | CS Hub</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --accent: #3b82f6;
+            --accent-alt: #10b981;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --link-color: rgba(148, 163, 184, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 5rem;
+        }
+
+        header {
+            padding: 4rem 5% 2rem;
+            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 40%);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            transition: opacity 0.3s;
+        }
+
+        .back-btn:hover { opacity: 0.8; }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+
+        main { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
+
+        section { margin-top: 4rem; }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 4px;
+        }
+
+        .intro-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* --- ENHANCED SVG STYLES --- */
+        .diagram-wrapper {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+
+        svg { width: 100%; height: auto; max-width: 800px; }
+        
+        .svg-container { fill: rgba(59, 130, 246, 0.05); stroke: var(--accent); stroke-width: 2; }
+        .svg-main-unit { fill: #1e293b; stroke: rgba(255,255,255,0.1); stroke-width: 1.5; }
+        .svg-sub-block { fill: #334155; stroke: rgba(255,255,255,0.2); stroke-width: 1; }
+        .svg-alu-block { fill: #1e3a8a; stroke: var(--accent); stroke-width: 2; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3)); }
+        .svg-external { fill: #0f172a; stroke: var(--accent-alt); stroke-width: 1.5; opacity: 0.8; }
+        
+        .svg-text-bold { fill: #fff; font-family: 'Space Grotesk'; font-size: 12px; font-weight: bold; text-anchor: middle; }
+        .svg-text-small { fill: var(--text-secondary); font-family: 'Inter'; font-size: 10px; text-anchor: middle; }
+        .svg-arrow { stroke: var(--text-primary); stroke-width: 2; fill: none; }
+        
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .comp-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .comp-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .comp-card i {
+            font-size: 2rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .comp-card h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem; }
+        .comp-card p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th {
+            text-align: left;
+            padding: 1.2rem;
+            color: var(--accent-alt);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        @media (max-width: 768px) {
+            header { padding-top: 2rem; }
+            .diagram-wrapper { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Hub
+        </a>
+        <h1>CPU Architecture</h1>
+        <p class="subtitle">Understanding the internal flow of data and control.</p>
+    </header>
+
+    <main>
+        <section>
+            <div class="intro-card">
+                <div>
+                    <h2>The Organization of a Processor</h2>
+                    <p>Modern CPUs are organized into specific functional units. Below is a detailed view of how the Control Unit, ALU, and Memory Unit work together with external hardware.</p>
+                </div>
+                
+                <div class="diagram-wrapper">
+                    <svg viewBox="0 0 800 450">
+                        <defs>
+                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                <path d="M0,0 L10,5 L0,10 Z" fill="white" />
+                            </marker>
+                        </defs>
+
+                        <!-- Main CPU Container -->
+                        <rect x="200" y="50" width="400" height="300" rx="20" class="svg-container" />
+                        <text x="400" y="35" class="svg-text-bold" style="font-size: 16px;">Central Processing Unit (CPU)</text>
+
+                        <!-- External: Input Unit -->
+                        <rect x="20" y="175" width="120" height="50" rx="10" class="svg-external" />
+                        <text x="80" y="205" class="svg-text-bold">Input Unit</text>
+                        <path d="M140 200 L200 200" class="svg-arrow" marker-end="url(#arrow)" />
+
+                        <!-- External: Output Unit -->
+                        <rect x="660" y="175" width="120" height="50" rx="10" class="svg-external" />
+                        <text x="720" y="205" class="svg-text-bold">Output Unit</text>
+                        <path d="M600 200 L660 200" class="svg-arrow" marker-end="url(#arrow)" />
+
+                        <!-- Control Unit Box -->
+                        <rect x="230" y="70" width="340" height="80" rx="10" class="svg-main-unit" />
+                        <text x="400" y="85" class="svg-text-small">Control Unit</text>
+                        <!-- Circuits inside CU -->
+                        <rect x="245" y="100" width="90" height="35" rx="5" class="svg-sub-block" />
+                        <text x="290" y="122" class="svg-text-small" style="fill:#fff">Clock Circuit</text>
+                        
+                        <rect x="355" y="100" width="90" height="35" rx="5" class="svg-sub-block" />
+                        <text x="400" y="122" class="svg-text-small" style="fill:#fff">Latch Circuit</text>
+                        
+                        <rect x="465" y="100" width="90" height="35" rx="5" class="svg-sub-block" />
+                        <text x="510" y="122" class="svg-text-small" style="fill:#fff">Reset Circuit</text>
+
+                        <!-- ALU Block -->
+                        <rect x="330" y="175" width="140" height="50" rx="10" class="svg-alu-block" />
+                        <text x="400" y="200" class="svg-text-bold" style="font-size: 11px;">ALU (Arithmetic & Logic)</text>
+
+                        <!-- Memory Unit Box -->
+                        <rect x="230" y="250" width="340" height="80" rx="10" class="svg-main-unit" />
+                        <text x="400" y="265" class="svg-text-small">Memory Unit</text>
+                        <!-- Blocks inside Memory Unit -->
+                        <rect x="280" y="280" width="100" height="35" rx="5" class="svg-sub-block" />
+                        <text x="330" y="302" class="svg-text-small" style="fill:#fff">Register</text>
+                        
+                        <rect x="420" y="280" width="100" height="35" rx="5" class="svg-sub-block" />
+                        <text x="470" y="302" class="svg-text-small" style="fill:#fff">Cache Memory</text>
+
+                        <!-- External: Main Memory -->
+                        <rect x="330" y="380" width="140" height="50" rx="10" class="svg-external" />
+                        <text x="400" y="410" class="svg-text-bold">Main Memory</text>
+
+                        <!-- Flow Arrows -->
+                        <path d="M400 150 L400 175" class="svg-arrow" marker-end="url(#arrow)" /> <!-- CU to ALU -->
+                        <path d="M500 150 L500 250" class="svg-arrow" marker-end="url(#arrow)" /> <!-- CU to MU -->
+                        <path d="M380 225 L380 250" class="svg-arrow" marker-end="url(#arrow)" /> <!-- ALU to MU -->
+                        <path d="M420 250 L420 225" class="svg-arrow" marker-end="url(#arrow)" /> <!-- MU to ALU -->
+                        
+                        <!-- Bidirectional MU to RAM -->
+                        <path d="M385 330 L385 380" class="svg-arrow" marker-end="url(#arrow)" />
+                        <path d="M415 380 L415 330" class="svg-arrow" marker-end="url(#arrow)" />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Breakdown of Parts</h2>
+            <div class="comp-grid">
+                <div class="comp-card">
+                    <i class="fas fa-microchip"></i>
+                    <h3>Control Unit (CU)</h3>
+                    <p>The manager that decodes instructions and coordinates the flow of data within the CPU.</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-calculator"></i>
+                    <h3>ALU</h3>
+                    <p>The "Decision Maker" that handles both arithmetic (math) and logic (comparisons like AND/OR).</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-memory"></i>
+                    <h3>Memory Unit</h3>
+                    <p>Internal fast storage area that coordinates with registers and cache memory for data handling.</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-list-ol"></i>
+                    <h3>Registers</h3>
+                    <p>Tiny, high-speed storage locations inside the CPU used to hold data currently being processed.</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>System Clock</h3>
+                    <p>Provides steady timing pulses to keep all internal operations of the processor synchronized.</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-bus"></i>
+                    <h3>Buses</h3>
+                    <p>The internal communication pathways that carry data and addresses between different components.</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-keyboard"></i>
+                    <h3>Input Unit</h3>
+                    <p>External devices like keyboards or mice that send raw data into the processor for calculation.</p>
+                </div>
+                <div class="comp-card">
+                    <i class="fas fa-desktop"></i>
+                    <h3>Output Unit</h3>
+                    <p>External devices like monitors or printers that display the final results processed by the CPU.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Component Functions</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Block</th>
+                            <th>Primary Role</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Clock Circuit</strong></td>
+                            <td>Provides the timing pulses for the whole system.</td>
+                            <td>Synchronizing data fetch steps.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ALU</strong></td>
+                            <td>Performs the actual calculations.</td>
+                            <td>Adding 5 + 10 or checking if A > B.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cache Memory</strong></td>
+                            <td>Stores instructions used many times.</td>
+                            <td>Speeds up loops in a program.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Main Memory</strong></td>
+                            <td>Large storage for all open apps/data.</td>
+                            <td>Your 8GB or 16GB RAM module.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bus</strong></td>
+                            <td>Pathway to transfer data between internal parts.</td>
+                            <td>Moving a sum from the ALU to a Register.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Register</strong></td>
+                            <td>High-speed storage for active data or instructions.</td>
+                            <td>Holding a temporary number during a calculation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
