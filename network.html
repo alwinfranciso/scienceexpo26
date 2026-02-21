@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Layouts | CS Hub</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.4);
+            --accent-gradient: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --node-color: #3b82f6;
+            --link-color: rgba(148, 163, 184, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 5rem;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 4rem 5% 2rem;
+            background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 40%);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            transition: opacity 0.3s;
+        }
+
+        .back-btn:hover { opacity: 0.8; }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+
+        /* --- MAIN CONTENT --- */
+        main { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
+
+        section { margin-top: 4rem; }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 4px;
+        }
+
+        /* --- DIAGRAMS SVG --- */
+        .diagram-container {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 24px 24px 0 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: none;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        svg {
+            width: 100%;
+            height: 160px;
+            max-width: 250px;
+        }
+
+        .svg-node { fill: var(--node-color); filter: drop-shadow(0 0 4px var(--node-color)); }
+        .svg-hub { fill: var(--accent); filter: drop-shadow(0 0 6px var(--accent-glow)); }
+        .svg-link { stroke: var(--link-color); stroke-width: 2; fill: none; }
+        .svg-backbone { stroke: var(--accent); stroke-width: 3; fill: none; }
+
+        /* --- TYPES GRID --- */
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .type-card {
+            background: var(--surface);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .type-card:hover { 
+            border-color: var(--accent); 
+            transform: translateY(-5px);
+        }
+
+        .card-text { padding: 1.5rem 2rem 2rem; }
+
+        .type-card h3 {
+            margin-bottom: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .type-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* --- TABLE --- */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th {
+            text-align: left;
+            padding: 1.2rem;
+            color: var(--accent);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        @media (max-width: 768px) {
+            .types-grid { grid-template-columns: 1fr; }
+            header { padding-top: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Hub
+        </a>
+        <h1>Network Layouts</h1>
+        <p class="subtitle">The six common ways we arrange computer connections.</p>
+    </header>
+
+    <main>
+        <section>
+            <div class="types-grid">
+                
+                <!-- 1. BUS -->
+                <div class="type-card">
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 200 100">
+                            <line x1="20" y1="50" x2="180" y2="50" class="svg-backbone" />
+                            <line x1="40" y1="50" x2="40" y2="30" class="svg-link" />
+                            <line x1="80" y1="50" x2="80" y2="70" class="svg-link" />
+                            <line x1="120" y1="50" x2="120" y2="30" class="svg-link" />
+                            <line x1="160" y1="50" x2="160" y2="70" class="svg-link" />
+                            <circle cx="40" cy="25" r="8" class="svg-node" />
+                            <circle cx="80" cy="75" r="8" class="svg-node" />
+                            <circle cx="120" cy="25" r="8" class="svg-node" />
+                            <circle cx="160" cy="75" r="8" class="svg-node" />
+                        </svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Bus Topology</h3>
+                        <p>A single main cable (backbone) acts as a common path. Simple to set up, but the whole network fails if the main cable breaks.</p>
+                    </div>
+                </div>
+
+                <!-- 2. STAR -->
+                <div class="type-card">
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 200 100">
+                            <line x1="100" y1="50" x2="100" y2="15" class="svg-link" />
+                            <line x1="100" y1="50" x2="140" y2="35" class="svg-link" />
+                            <line x1="100" y1="50" x2="140" y2="65" class="svg-link" />
+                            <line x1="100" y1="50" x2="100" y2="85" class="svg-link" />
+                            <line x1="100" y1="50" x2="60" y2="65" class="svg-link" />
+                            <line x1="100" y1="50" x2="60" y2="35" class="svg-link" />
+                            <circle cx="100" cy="50" r="12" class="svg-hub" />
+                            <circle cx="100" cy="15" r="7" class="svg-node" />
+                            <circle cx="140" cy="35" r="7" class="svg-node" />
+                            <circle cx="140" cy="65" r="7" class="svg-node" />
+                            <circle cx="100" cy="85" r="7" class="svg-node" />
+                            <circle cx="60" cy="65" r="7" class="svg-node" />
+                            <circle cx="60" cy="35" r="7" class="svg-node" />
+                        </svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Star Topology</h3>
+                        <p>All devices connect to a central hub or switch. If one cable fails, only that device is affected. Very easy to troubleshoot.</p>
+                    </div>
+                </div>
+
+                <!-- 3. RING -->
+                <div class="type-card">
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 200 100">
+                            <circle cx="100" cy="50" r="35" class="svg-link" />
+                            <circle cx="100" cy="15" r="8" class="svg-node" />
+                            <circle cx="135" cy="50" r="8" class="svg-node" />
+                            <circle cx="100" cy="85" r="8" class="svg-node" />
+                            <circle cx="65" cy="50" r="8" class="svg-node" />
+                        </svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Ring Topology</h3>
+                        <p>Devices are connected in a closed loop. Data travels in one direction. Adding new devices can disrupt the whole network.</p>
+                    </div>
+                </div>
+
+                <!-- 4. TREE -->
+                <div class="type-card">
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 200 100">
+                            <line x1="100" y1="20" x2="60" y2="50" class="svg-link" />
+                            <line x1="100" y1="20" x2="140" y2="50" class="svg-link" />
+                            <line x1="60" y1="50" x2="40" y2="80" class="svg-link" />
+                            <line x1="60" y1="50" x2="80" y2="80" class="svg-link" />
+                            <line x1="140" y1="50" x2="120" y2="80" class="svg-link" />
+                            <line x1="140" y1="50" x2="160" y2="80" class="svg-link" />
+                            <circle cx="100" cy="20" r="10" class="svg-hub" />
+                            <circle cx="60" cy="50" r="8" class="svg-node" />
+                            <circle cx="140" cy="50" r="8" class="svg-node" />
+                            <circle cx="40" cy="80" r="6" class="svg-node" />
+                            <circle cx="80" cy="80" r="6" class="svg-node" />
+                            <circle cx="120" cy="80" r="6" class="svg-node" />
+                            <circle cx="160" cy="80" r="6" class="svg-node" />
+                        </svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Tree Topology</h3>
+                        <p>A hierarchical layout where multiple stars are connected to a central "trunk" cable. Used for large buildings.</p>
+                    </div>
+                </div>
+
+                <!-- 5. MESH -->
+                <div class="type-card">
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 200 100">
+                            <polygon points="100,20 140,45 125,85 75,85 60,45" class="svg-link" />
+                            <line x1="100" y1="20" x2="125" y2="85" class="svg-link" />
+                            <line x1="100" y1="20" x2="75" y2="85" class="svg-link" />
+                            <line x1="140" y1="45" x2="75" y2="85" class="svg-link" />
+                            <line x1="140" y1="45" x2="60" y2="45" class="svg-link" />
+                            <line x1="125" y1="85" x2="60" y2="45" class="svg-link" />
+                            <circle cx="100" cy="20" r="8" class="svg-node" />
+                            <circle cx="140" cy="45" r="8" class="svg-node" />
+                            <circle cx="125" cy="85" r="8" class="svg-node" />
+                            <circle cx="75" cy="85" r="8" class="svg-node" />
+                            <circle cx="60" cy="45" r="8" class="svg-node" />
+                        </svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Mesh Topology</h3>
+                        <p>Every device is connected to several others. This provides multiple paths for data, making it the most reliable setup.</p>
+                    </div>
+                </div>
+
+                <!-- 6. HYBRID -->
+                <div class="type-card">
+                    <div class="diagram-container">
+                        <svg viewBox="0 0 200 100">
+                            <!-- Star Part -->
+                            <line x1="50" y1="50" x2="50" y2="25" class="svg-link" />
+                            <line x1="50" y1="50" x2="75" y2="50" class="svg-link" />
+                            <line x1="50" y1="50" x2="50" y2="75" class="svg-link" />
+                            <line x1="50" y1="50" x2="25" y2="50" class="svg-link" />
+                            <!-- Bus Part -->
+                            <line x1="100" y1="50" x2="180" y2="50" class="svg-backbone" />
+                            <line x1="130" y1="50" x2="130" y2="75" class="svg-link" />
+                            <line x1="160" y1="50" x2="160" y2="75" class="svg-link" />
+                            <!-- Connection -->
+                            <line x1="50" y1="50" x2="100" y2="50" class="svg-backbone" stroke-dasharray="4" />
+                            
+                            <circle cx="50" cy="50" r="10" class="svg-hub" />
+                            <circle cx="50" cy="25" r="6" class="svg-node" />
+                            <circle cx="75" cy="50" r="6" class="svg-node" />
+                            <circle cx="50" cy="75" r="6" class="svg-node" />
+                            <circle cx="25" cy="50" r="6" class="svg-node" />
+                            <circle cx="130" cy="75" r="6" class="svg-node" />
+                            <circle cx="160" cy="75" r="6" class="svg-node" />
+                        </svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Hybrid Topology</h3>
+                        <p>A combination of two or more different topologies (e.g., Star and Bus). It offers great flexibility for growing networks.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>Comparison Summary</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Layout</th>
+                            <th>Key Advantage</th>
+                            <th>Main Drawback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Bus</strong></td>
+                            <td>Very easy to set up for small rooms.</td>
+                            <td>A single cable break stops everything.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Star</strong></td>
+                            <td>One bad cable doesn't affect others.</td>
+                            <td>If the central hub dies, all die.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ring</strong></td>
+                            <td>Data flows in a very organized way.</td>
+                            <td>Adding a node stops the network.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tree</strong></td>
+                            <td>Great for organizing large companies.</td>
+                            <td>Depends entirely on the central "trunk."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mesh</strong></td>
+                            <td>Zero chance of total network failure.</td>
+                            <td>Needs huge amounts of cabling.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hybrid</strong></td>
+                            <td>Extremely flexible for expansion.</td>
+                            <td>Very difficult and expensive to design.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
